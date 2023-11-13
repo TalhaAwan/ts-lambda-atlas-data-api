@@ -1,0 +1,39 @@
+{
+  "name": "ts-lambda-atlas-data-api",
+  "version": "1.0.0",
+  "description": "Node.js Typescript code for AWS lambda, integrating MongoDB Atlas Data API, with unit & integration tests, build scripts, and API documentation.",
+  "main": "index.js",
+  "scripts": {
+    "prettify": "prettier build --write",
+    "cleanup": "rm -r -f dist && rm -f dist.zip",
+    "zip": "cd dist && zip -r dist.zip * && mv dist.zip ../dist.zip",
+    "build": "npm run cleanup && tsc && npm run prettify && mv build dist && npm run zip",
+    "build:doc": "apidoc -i src -o apidoc && cp src/docs/favicon.ico apidoc/assets/favicon.ico",
+    "build:aws-layer": "mkdir nodejs && cp package.json ./nodejs && cd nodejs && npm i --omit=dev && cd .. && zip -r nodejs.zip nodejs && rm -rf nodejs",
+    "test": "npm run typecheck && vitest run",
+    "typecheck": "tsc --noEmit",
+    "test:watch": "vitest",
+    "execLocal": "ts-node --esm src/local.mts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/apidoc": "^0.50.3",
+    "apidoc": "^1.2.0",
+    "axios": "^1.6.1",
+    "prettier": "^3.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.6"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=14.x.x <=16.x.x",
+    "npm": ">=8.0.0"
+  },
+  "dependencies": {
+    "bson": "^5.5.1",
+    "dotenv": "^16.3.1",
+    "jsonschema": "^1.4.1"
+  }
+}

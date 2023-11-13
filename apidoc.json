@@ -1,0 +1,21 @@
+{
+  "name": "Example API Documentation",
+  "version": "1.0.0",
+  "description": "Documentation to access the example RESTful APIs",
+  "apidoc": {
+    "header": {
+      "title": "Introduction",
+      "filename": "src/docs/header.md"
+    },
+    "title": "Developer Docs for the Example API",
+    "url": "https://example.com",
+    "template": {
+      "showRequiredLabels": true,
+      "withCompare": false,
+      "withGenerator": false
+    },
+    "order": [
+      "Machine"
+    ]
+  }
+}

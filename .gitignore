@@ -1,0 +1,28 @@
+.DS_Store
+.idea/
+node_modules/
+.history/
+coverage
+
+# Build directories & files
+dist/
+nodejs
+dist.zip
+nodejs.zip
+
+# Docs
+apidoc
+
+# Logs
+npm-debug.log*
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Env
+.env
+.env.test

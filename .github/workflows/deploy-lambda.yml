@@ -1,0 +1,47 @@
+name: Deploy Lambda
+on:
+  push:
+    branches:
+      - dev
+      - staging
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lambdas/api
+    environment:
+      name: ${{ (github.ref == 'refs/heads/main' && 'Production') || (github.ref == 'refs/heads/staging' && 'Staging') || (github.ref == 'refs/heads/dev' && 'Development') }}      
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:      
+      - name: Get Code
+        uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}    
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Clean install dependencies and test
+        env:
+          MONGO_HOST_NAME: ${{ vars.MONGO_HOST_NAME }}
+          MONGO_PATH: ${{ vars.MONGO_PATH }}
+          MONGO_DATABASE: ${{ vars.MONGO_DATABASE }}
+          MONGO_DATASOURCE: ${{ vars.MONGO_DATASOURCE }}
+          MONGO_DATA_API_KEY: ${{ secrets.MONGO_DATA_API_KEY }}
+        run: |
+          npm ci
+          npm run test
+        
+      - name: build
+        run: npm run build
+
+      - name: deploy
+        run: aws lambda update-function-code --function-name="${{ vars['LAMBDA_NAME']}}" --region="${{ vars.AWS_REGION }}" --zip-file=fileb://dist.zip
